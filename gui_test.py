@@ -139,14 +139,17 @@ def predict_image(img_path):
     img_array = image.img_to_array(img) / 255.0
     img_array = np.expand_dims(img_array, axis=0)
 
-    prob = model.predict(img_array)[0][0]
 
-    if prob >= 0.5:
+    prob = float(model.predict(img_array, verbose=0)[0][0])  # sigmoid çıktı
+
+    THRESHOLD = 0.5  # eski hal
+
+    if prob >= THRESHOLD:
         label = "Sağlıklı (healthy)"
     else:
         label = "Hasta (early blight)"
 
-    return label, float(prob)
+    return label, prob
 
 
 def animate_progress(target_width):
@@ -155,6 +158,7 @@ def animate_progress(target_width):
     if current_width < target_width:
         progress_bar.config(width=current_width + 5)
         root.after(10, lambda: animate_progress(target_width))
+
 
 def open_image():
     """Dosya seç, resmi göster, tahmin yap."""
@@ -248,7 +252,7 @@ info_frame.pack(pady=15, fill=tk.X)
 
 info_label = tk.Label(
     info_frame,
-    text="💡 Buse ERDOGAN",
+    text="BERAT ERDOGAN © 2025 • Yaprak Hastalığı Tespit Uygulaması",
     font=("Helvetica", 9),
     bg="#1e1e3f",
     fg="#64ffda",
